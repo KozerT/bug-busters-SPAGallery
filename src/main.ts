@@ -20,6 +20,7 @@ if (localStorage["pastSearches"]) {
 
 formInput.addEventListener("click", (e) => {
   e.preventDefault();
+
   console.log("are we finding the click?");
 });
 
@@ -28,6 +29,7 @@ form.addEventListener("submit", function (e) {
   searchQuery = formInput.value;
   console.log(searchUnsplash(searchQuery));
   console.log(pastSearches);
+  let itemFromStorage: string[] = [];
   if (
     pastSearches.indexOf(searchQuery) == -1 &&
     typeof searchQuery === "string" &&
@@ -44,9 +46,21 @@ form.addEventListener("submit", function (e) {
     const itemFromStorage: string[] = JSON.parse(
       localStorage.getItem("pastSearches") as string
     );
+    addItemToDom(itemFromStorage);
+    console.log("in if", itemFromStorage);
   }
   console.log("THE BITTER END", pastSearches);
+  console.log("outside", itemFromStorage);
 });
+
+const addItemToDom = (item: string[]) => {
+  console.log("tjotjopp", item);
+  for (let i = 0; i < item.length; i++) {
+    const li = document.createElement("li");
+    ul.appendChild(li);
+    li.innerText = item[i];
+  }
+};
 
 async function searchUnsplash(searchQuery: string) {
   const endpoint = `https://api.unsplash.com/search/photos?query=${searchQuery}&client_id=${accessKey}`;
