@@ -6,40 +6,47 @@ const unsplash = createApi({
   accessKey: import.meta.env.VITE_ACCESS_KEY,
 });
 const accessKey = import.meta.env.VITE_ACCESS_KEY;
-// const browserApi = createApi({
-//   apiUrl: "https://mywebsite.com/unsplash-proxy",
-// });
-
-//1. searchQuery comes from the form;
 
 let searchQuery: string;
-let pastSearches: string | [] = localStorage.getItem("searchItems")
-  ? JSON.parse(localStorage.getItem("searchItems") as string)
-  : [];
+let pastSearches: string[] = [];
 console.log(pastSearches);
 const form = document.getElementById("form") as HTMLFormElement;
 const formInput = document.getElementById("search-form") as HTMLInputElement;
 const ul = document.getElementById("searchList") as HTMLUListElement;
 
-const addSearch = (text: string) => {
-  const li = document.createElement("li");
-  li.textContent = text;
-  ul.appendChild(li);
-};
+if (localStorage["pastSearches"]) {
+  pastSearches = JSON.parse(localStorage["pastSearches"]);
+}
 
-form.addEventListener("submit", function(e) {
+formInput.addEventListener("click", (e) => {
+  e.preventDefault();
+  console.log("are we finding the click?");
+});
+
+form.addEventListener("submit", function (e) {
   e.preventDefault();
   searchQuery = formInput.value;
   console.log(searchUnsplash(searchQuery));
-  addSearch(searchQuery);
   console.log(pastSearches);
-  if (!localStorage.getItem(searchQuery)) {
-    if (localStorage.getItem("searchItems"))
-      localStorage.setItem("searchItem", searchQuery);
+  if (
+    pastSearches.indexOf(searchQuery) == -1 &&
+    typeof searchQuery === "string" &&
+    searchQuery !== ""
+  ) {
+    pastSearches.unshift(searchQuery);
+    if (pastSearches.length > 5) {
+      pastSearches.pop();
+    }
+    localStorage["pastSearches"] = JSON.stringify(pastSearches);
   }
+  if (localStorage.getItem("pastSearches") !== null) {
+    console.log(JSON.parse(localStorage.getItem("pastSearches") as string));
+    const itemFromStorage: string[] = JSON.parse(
+      localStorage.getItem("pastSearches") as string
+    );
+  }
+  console.log("THE BITTER END", pastSearches);
 });
-
-//const submitResults = () => {};
 
 async function searchUnsplash(searchQuery: string) {
   const endpoint = `https://api.unsplash.com/search/photos?query=${searchQuery}&client_id=${accessKey}`;
