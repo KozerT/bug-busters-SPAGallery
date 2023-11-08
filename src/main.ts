@@ -20,7 +20,7 @@ let resultStats = document.querySelector(".js-result-stats") as HTMLElement;
 if (localStorage["pastSearches"]) {
   pastSearches = JSON.parse(localStorage["pastSearches"]);
 }
-
+//Just a comment
 formInput.addEventListener("click", (e) => {
   e.preventDefault();
 
